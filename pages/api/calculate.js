@@ -34,7 +34,10 @@ export default async function handler(req, res) {
       const result = await pool.query(query, [startDate, endDate]);
       const totalSum = parseFloat(result.rows[0].total_sum);
       
-      res.status(200).json({ totalSum: totalSum });
+      // Cap the final sum at 27 ETH
+      const finalSum = totalSum > 27 ? 27 : totalSum;
+      
+      res.status(200).json({ totalSum: finalSum });
     } catch (error) {
       console.error('Error calculating sum:', error);
       res.status(500).json({ error: 'Failed to calculate total' });
